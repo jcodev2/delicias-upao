@@ -1,9 +1,87 @@
+'use client'
+
+import useUser from '@/hooks/useUser.hook'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'react-hot-toast'
+import useAuthModal from '../Modal/useAuthModal.hook'
 import Navigation from './Navigation'
 
-const Header = () => {
+const ProfileBox = ({ user, showBox, setShowBox }) => {
+  const supabaseClient = useSupabaseClient()
+  const router = useRouter()
+
   return (
-    <header className='fixed bottom-0 flex h-16 w-full items-center justify-between border border-slate-200 bg-neutral-50 backdrop-blur-sm md:top-0 md:z-10 md:border-none md:bg-transparent md:px-2 md:backdrop-blur-0'>
+    <div
+      className='absolute right-0 top-12 w-40 rounded-md border border-gray-200 bg-white p-2 shadow-md'
+      style={{ display: showBox ? 'block' : 'none' }}
+      onMouseEnter={() => setShowBox(true)}
+      onMouseLeave={() => setShowBox(false)}
+    >
+      <p className='text-center text-sm text-gray-600'>
+        Welcome, {user?.user_metadata.name}!
+      </p>
+      <button
+        className='flex w-full justify-center text-sm text-red-500 hover:text-red-600'
+        onClick={async (e) => {
+          e.preventDefault()
+
+          const { error } = await supabaseClient.auth.signOut()
+
+          if (!error) {
+            toast.success('Logout successful!')
+            return
+          }
+
+          router.refresh()
+        }}
+      >
+        Logout
+      </button>
+    </div>
+  )
+}
+
+const ProfilePicture = () => (
+  <picture className='flex h-12 w-12 items-center justify-end'>
+    <source
+      srcSet='/img/default-profile.png'
+      type='image/webp'
+    />
+    <img
+      src='/img/default-profile.png'
+      alt='Avatar'
+      className='h-10 w-10 rounded-full object-contain'
+    />
+  </picture>
+)
+
+const ProfileLink = ({ user, showBox, setShowBox }) => (
+  <Link
+    href='/profile'
+    className='relative flex items-center justify-center gap-2'
+    onMouseEnter={() => setShowBox(true)}
+    onMouseLeave={() => setShowBox(false)}
+  >
+    <ProfilePicture />
+    <ProfileBox
+      user={user}
+      showBox={showBox}
+      setShowBox={setShowBox}
+    />
+  </Link>
+)
+
+const Header = () => {
+  const { onOpen } = useAuthModal()
+  const { user } = useUser()
+
+  const [showBox, setShowBox] = useState(false)
+
+  return (
+    <header className='fixed bottom-0 z-40 flex h-16 w-full items-center justify-between border border-slate-200 bg-neutral-50 md:top-0 md:z-10 md:border-none md:bg-neutral-50/20 md:px-4 md:backdrop-blur-lg'>
       <Link
         href='/'
         className='hidden items-center justify-start gap-2 md:flex md:w-1/4'
@@ -25,9 +103,22 @@ const Header = () => {
       <Navigation />
 
       <div className='hidden items-center justify-end gap-4 md:flex md:w-1/4'>
-        <button className='rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 text-sm font-semibold text-neutral-100 transition hover:opacity-95'>
-          Sign In
-        </button>
+        {user ? (
+          <>
+            <ProfileLink
+              user={user}
+              showBox={showBox}
+              setShowBox={setShowBox}
+            />
+          </>
+        ) : (
+          <button
+            className='rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 text-sm font-semibold text-neutral-100 transition hover:opacity-95'
+            onClick={onOpen}
+          >
+            Sign In
+          </button>
+        )}
       </div>
     </header>
   )
