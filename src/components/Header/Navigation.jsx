@@ -15,7 +15,7 @@ const Navigation = () => {
             key={name}
             className={`relative flex w-full cursor-pointer flex-col items-center justify-center rounded-full bg-gradient-to-r py-2 font-medium transition hover:text-neutral-600 md:rounded-none md:py-0 ${
               router === path
-                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-neutral-100 hover:text-neutral-100 md:bg-transparent md:from-transparent md:to-transparent  md:text-neutral-600 md:hover:text-neutral-600'
+                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-neutral-100 hover:text-neutral-100 md:bg-transparent md:from-transparent md:to-transparent md:text-black md:hover:text-neutral-600'
                 : ''
             }`}
           >
