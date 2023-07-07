@@ -2,8 +2,40 @@
 
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { toast } from 'react-hot-toast'
+
+const validateInput = (email, password, name = '') => {
+  const errors = {}
+  const nameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
+  const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+=[\]{}|\\,.?:-]{8,}$/
+
+  if (!email || !password) {
+    errors.general = 'Please fill in all fields'
+    return errors
+  }
+
+  if (name && !nameRegex.test(name)) {
+    errors.name = 'Please enter a valid name'
+  }
+
+  if (!emailRegex.test(email)) {
+    errors.email = 'Please enter a valid email address'
+  }
+
+  if (password.length < 8 || password.length > 32) {
+    errors.password = 'Password must be between 8 and 32 characters'
+  }
+
+  if (!passwordRegex.test(password)) {
+    errors.password =
+      'Password must contain at least one uppercase letter, one lowercase letter and one number'
+  }
+
+  return errors
+}
 
 const Auth = ({ providers }) => {
   const supabaseClient = useSupabaseClient()
@@ -14,68 +46,40 @@ const Auth = ({ providers }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState()
-  const [errorName, setErrorName] = useState()
-  const [errorEmail, setErrorEmail] = useState()
-  const [errorPassword, setErrorPassword] = useState()
+  const [errors, setErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // create refs for input elements
+  const nameRef = useRef()
+  const emailRef = useRef()
+  const passwordRef = useRef()
 
   const handleSignIn = async () => {
-    if (!name || !email || !password) {
-      setError('Please fill in all fields')
-      setTimeout(() => {
-        setError(null)
-      }, 5000) // reset error after 5 seconds
+    setIsSubmitting(true)
 
-      // focus on first empty input field
-      if (!name) {
-        document.getElementById('name').focus()
-        return
-      }
-      if (!email) {
-        document.getElementById('email').focus()
-        return
-      }
-      if (!password) {
-        document.getElementById('password').focus()
-        return
-      }
+    const errors = validateInput(name, email, password)
+
+    setErrors(errors)
+
+    // focus on first empty input field
+    if (!name) {
+      nameRef.current.focus()
+      setIsSubmitting(false)
       return
     }
-    const nameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
-    const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-
-    if (!nameRegex.test(name)) {
-      setErrorName('Please enter a valid name')
-      setTimeout(() => {
-        setErrorName(null)
-      }, 5000) // reset error after 5 seconds
+    if (!email) {
+      emailRef.current.focus()
+      setIsSubmitting(false)
+      return
+    }
+    if (!password) {
+      passwordRef.current.focus()
+      setIsSubmitting(false)
       return
     }
 
-    if (!emailRegex.test(email)) {
-      setErrorEmail('Please enter a valid email address')
-      setTimeout(() => {
-        setErrorEmail(null)
-      }, 5000) // reset error after 5 seconds
-      return
-    }
-
-    if (password.length < 8 || password.length > 32) {
-      setErrorPassword('Password must be between 8 and 32 characters')
-      setTimeout(() => {
-        setErrorPassword(null)
-      }, 5000) // reset error after 5 seconds
-      return
-    }
-
-    if (!passwordRegex.test(password)) {
-      setErrorPassword(
-        'Password must contain at least one uppercase letter, one lowercase letter and one number'
-      )
-      setTimeout(() => {
-        setErrorPassword(null)
-      }, 5000)
+    if (Object.keys(errors).length > 0) {
+      setIsSubmitting(false)
       return
     }
 
@@ -87,58 +91,37 @@ const Auth = ({ providers }) => {
       }
     })
 
-    if (error) setError(error.message)
-    else {
+    if (error) {
+      setErrors({ general: error.message })
+      setIsSubmitting(false)
+    } else {
       toast.success('Account created successfully!')
       router.refresh()
+      setIsSubmitting(false)
     }
   }
 
   const handleSignUp = async () => {
-    if (!email || !password) {
-      setError('Please fill in all fields')
-      setTimeout(() => {
-        setError(null)
-      }, 5000) // reset error after 5 seconds
+    setIsSubmitting(true)
 
-      // focus on first empty input field
-      if (!email) {
-        document.getElementById('email').focus()
-        return
-      }
-      if (!password) {
-        document.getElementById('password').focus()
-        return
-      }
+    const errors = validateInput(email, password)
+
+    setErrors(errors)
+
+    // focus on first empty input field
+    if (!email) {
+      emailRef.current.focus()
+      setIsSubmitting(false)
+      return
+    }
+    if (!password) {
+      passwordRef.current.focus()
+      setIsSubmitting(false)
       return
     }
 
-    const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-
-    if (!emailRegex.test(email)) {
-      setErrorEmail('Please enter a valid email address')
-      setTimeout(() => {
-        setErrorEmail(null)
-      }, 5000) // reset error after 5 seconds
-      return
-    }
-
-    if (password.length < 8 || password.length > 32) {
-      setErrorPassword('Password must be between 8 and 32 characters')
-      setTimeout(() => {
-        setErrorPassword(null)
-      }, 5000) // reset error after 5 seconds
-      return
-    }
-
-    if (!passwordRegex.test(password)) {
-      setErrorPassword(
-        'Password must contain at least one uppercase letter, one lowercase letter and one number'
-      )
-      setTimeout(() => {
-        setErrorPassword(null)
-      }, 5000)
+    if (Object.keys(errors).length > 0) {
+      setIsSubmitting(false)
       return
     }
 
@@ -147,10 +130,13 @@ const Auth = ({ providers }) => {
       password
     })
 
-    if (error) setError(error.message)
-    else {
+    if (error) {
+      setErrors({ general: error.message })
+      setIsSubmitting(false)
+    } else {
       toast.success('Logged in successfully!')
       router.refresh()
+      setIsSubmitting(false)
     }
   }
 
@@ -168,8 +154,8 @@ const Auth = ({ providers }) => {
         className='flex w-full flex-col items-center justify-center gap-6 px-4'
         onSubmit={(e) => {
           e.preventDefault()
-          setError(null)
-          isLogin ? handleSignIn(e) : handleSignUp(e)
+          setErrors({})
+          isLogin ? handleSignIn() : handleSignUp()
         }}
       >
         <div className='flex w-full flex-col items-center justify-center gap-4'>
@@ -224,10 +210,16 @@ const Auth = ({ providers }) => {
               placeholder='Enter your name'
               value={name}
               onChange={(e) => setName(e.target.value)}
+              ref={nameRef}
             />
 
-            {error && <p className='text-sm text-red-500'>{error}</p>}
-            {errorName && <p className='text-sm text-red-500'>{errorName}</p>}
+            {errors.general ? (
+              <p className='text-sm text-red-500'>{errors.general}</p>
+            ) : (
+              errors.name && (
+                <p className='text-sm text-red-500'>{errors.name}</p>
+              )
+            )}
           </div>
         )}
 
@@ -246,10 +238,16 @@ const Auth = ({ providers }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoFocus
+            ref={emailRef}
           />
 
-          {error && <p className='text-sm text-red-500'>{error}</p>}
-          {errorEmail && <p className='text-sm text-red-500'>{errorEmail}</p>}
+          {errors.general ? (
+            <p className='text-sm text-red-500'>{errors.general}</p>
+          ) : (
+            errors.email && (
+              <p className='text-sm text-red-500'>{errors.email}</p>
+            )
+          )}
         </div>
 
         <div className='flex w-full flex-col gap-2'>
@@ -266,22 +264,37 @@ const Auth = ({ providers }) => {
             placeholder='Enter your password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            ref={passwordRef}
           />
 
-          {error && <p className='text-sm text-red-500'>{error}</p>}
-          {errorPassword && (
-            <p className='text-sm text-red-500'>{errorPassword}</p>
+          {errors.general ? (
+            <p className='text-sm text-red-500'>{errors.general}</p>
+          ) : (
+            errors.password && (
+              <p className='text-sm text-red-500'>{errors.password}</p>
+            )
           )}
         </div>
 
         <div className='flex w-full flex-col items-center justify-center gap-4'>
           <button
             type='submit'
-            className='flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 text-white'
+            disabled={isSubmitting}
+            className={`flex w-full items-center justify-center gap-2 rounded-md ${
+              isSubmitting
+                ? 'cursor-not-allowed bg-neutral-400'
+                : 'bg-gradient-to-r from-orange-500 to-red-500'
+            } px-4 py-2 text-white`}
           >
-            <span className='text-base font-medium'>
-              {isLogin ? 'Regístrate' : 'Inicia sesión'}
-            </span>
+            {isSubmitting ? (
+              <span className='text-base font-medium'>
+                {isLogin ? 'Signing in...' : 'Signing up...'}
+              </span>
+            ) : (
+              <span className='text-base font-medium'>
+                {isLogin ? 'Iniciar sesión' : 'Registrarse'}
+              </span>
+            )}
           </button>
         </div>
 
