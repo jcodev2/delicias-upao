@@ -13,18 +13,21 @@ const ProfileBox = ({ user, showBox, setShowBox }) => {
   const supabaseClient = useSupabaseClient()
   const router = useRouter()
 
+  const getUserFromEmail = user?.email?.split('@')[0]
+  const showFirstName = user?.user_metadata?.name?.split(' ')[0]
+
   return (
     <div
-      className='absolute right-0 top-12 w-40 rounded-md border border-gray-200 bg-white p-2 shadow-md'
+      className='absolute right-0 top-12 w-44 rounded-md border border-gray-200 bg-white p-2 shadow-md'
       style={{ display: showBox ? 'block' : 'none' }}
       onMouseEnter={() => setShowBox(true)}
       onMouseLeave={() => setShowBox(false)}
     >
       <p className='text-center text-sm text-gray-600'>
-        Welcome, {user?.user_metadata.name}!
+        Bienvenido, {showFirstName || getUserFromEmail}
       </p>
       <button
-        className='flex w-full justify-center text-sm text-red-500 hover:text-red-600'
+        className='flex w-full justify-center text-sm font-semibold text-red-500 hover:text-red-600'
         onClick={async (e) => {
           e.preventDefault()
 
@@ -38,7 +41,7 @@ const ProfileBox = ({ user, showBox, setShowBox }) => {
           router.refresh()
         }}
       >
-        Logout
+        Cerrar sesión
       </button>
     </div>
   )
@@ -116,7 +119,7 @@ const Header = () => {
             className='rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 text-sm font-semibold text-neutral-100 transition hover:opacity-95'
             onClick={onOpen}
           >
-            Sign In
+            Regístrate
           </button>
         )}
       </div>

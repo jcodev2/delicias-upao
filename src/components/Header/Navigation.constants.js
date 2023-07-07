@@ -7,22 +7,22 @@ import { BiFoodMenu } from 'react-icons/bi'
 
 const routes = [
   {
-    name: 'Home',
+    name: 'Inicio',
     path: '/',
     Icon: AiOutlineHome
   },
   {
-    name: 'Menu',
+    name: 'Menú',
     path: '/menu',
     Icon: BiFoodMenu
   },
   {
-    name: 'Cart',
+    name: 'Carrito',
     path: '/cart',
     Icon: AiOutlineShoppingCart
   },
   {
-    name: 'Profile',
+    name: 'Perfil',
     path: '/profile',
     Icon: AiOutlineUser
   }

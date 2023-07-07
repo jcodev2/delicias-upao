@@ -201,7 +201,7 @@ const Auth = ({ providers }) => {
               htmlFor='name'
               className='cursor-pointer text-base font-medium text-neutral-700'
             >
-              Name
+              Nombre
             </label>
             <input
               className='h-10 w-full rounded-sm border border-neutral-700/10 bg-neutral-50 px-2 text-sm font-semibold outline-none ring-2 ring-transparent placeholder:text-black placeholder:text-opacity-50 focus:ring-1 focus:ring-neutral-300'
@@ -255,7 +255,7 @@ const Auth = ({ providers }) => {
             htmlFor='password'
             className='cursor-pointer text-base font-medium text-neutral-700'
           >
-            Password
+            Contraseña
           </label>
           <input
             className='h-10 w-full rounded-sm border border-neutral-700/10 bg-neutral-50 px-2 text-sm font-semibold outline-none ring-2 ring-transparent placeholder:text-black placeholder:text-opacity-50 focus:ring-1 focus:ring-neutral-300'

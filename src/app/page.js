@@ -21,7 +21,8 @@ export default function Home() {
           </h1>
 
           <p className='mx-auto mt-4 w-3/4 max-w-xl text-center text-base font-normal text-slate-500'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+            Adéntrate en el mundo de los bocadillos, encuentra el que más te
+            guste y disfruta de una experiencia única.
           </p>
         </Balancer>
 
@@ -29,7 +30,7 @@ export default function Home() {
           className='mt-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 font-medium text-white transition hover:opacity-95'
           href='/menu'
         >
-          Look for a hambuger
+          Explorar el menú
         </Link>
       </div>
 
