@@ -1,6 +1,6 @@
-import { IoMdClose } from 'react-icons/io'
-
+import Image from 'next/image'
 import PropTypes from 'prop-types'
+import { IoMdClose } from 'react-icons/io'
 import Overlay from './Overlay'
 
 const Modal = ({ isOpen, onChange, children }) => {
@@ -22,10 +22,12 @@ const Modal = ({ isOpen, onChange, children }) => {
               {children}
             </div>
 
-            <img
+            <Image
               src='/img/login.jpg'
               alt='Hero'
               className='hidden md:block md:w-1/2 md:rounded-r-lg md:object-cover md:object-center'
+              width={500}
+              height={500}
             />
           </article>
         </section>
