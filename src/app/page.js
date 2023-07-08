@@ -1,16 +1,22 @@
+import getRestaurants from '@/actions/getRestaurants'
 import { BackgroundBlur } from '@/components/BackgroundBlur'
 import LineSVG from '@/components/BackgroundBlur/LineSvg'
 import { Hand } from '@/components/Hand'
+import { Restaurants } from '@/components/Restaurants'
 import Link from 'next/link'
 import { Balancer } from 'react-wrap-balancer'
 
-export default function Home() {
+export const revalidate = 0
+
+export default async function Home() {
+  const restaurants = await getRestaurants()
+
   return (
     <>
       <BackgroundBlur />
 
-      <div className='flex min-h-screen flex-col items-center justify-center'>
-        <Balancer>
+      <section className='relative flex min-h-screen flex-col items-center justify-center'>
+        <Balancer className=''>
           <h1 className='mx-auto max-w-4xl text-center text-4xl font-medium tracking-tight text-slate-900 md:text-5xl lg:text-7xl'>
             Encuentra{' '}
             <span className='relative inline-block whitespace-nowrap text-red-500'>
@@ -20,7 +26,7 @@ export default function Home() {
             bocadillos en el mundo
           </h1>
 
-          <p className='mx-auto mt-4 w-3/4 max-w-xl text-center text-base font-normal text-slate-500'>
+          <p className='mx-auto mt-4 w-full max-w-xl text-center text-sm font-normal text-slate-500 md:text-base'>
             Adéntrate en el mundo de los bocadillos, encuentra el que más te
             guste y disfruta de una experiencia única.
           </p>
@@ -32,9 +38,11 @@ export default function Home() {
         >
           Explorar el menú
         </Link>
-      </div>
 
-      <Hand />
+        <Hand />
+      </section>
+
+      <Restaurants restaurants={restaurants} />
     </>
   )
 }
