@@ -48,6 +48,7 @@ const Auth = ({ providers }) => {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   // create refs for input elements
   const nameRef = useRef()
@@ -155,6 +156,7 @@ const Auth = ({ providers }) => {
         onSubmit={(e) => {
           e.preventDefault()
           setErrors({})
+          setShowPassword(false)
           isLogin ? handleSignIn() : handleSignUp()
         }}
       >
@@ -259,7 +261,7 @@ const Auth = ({ providers }) => {
           </label>
           <input
             className='h-10 w-full rounded-sm border border-neutral-700/10 bg-neutral-50 px-2 text-sm font-semibold outline-none ring-2 ring-transparent placeholder:text-black placeholder:text-opacity-50 focus:ring-1 focus:ring-neutral-300'
-            type='password'
+            type={showPassword ? 'text' : 'password'}
             id='password'
             placeholder='Enter your password'
             value={password}
@@ -274,6 +276,22 @@ const Auth = ({ providers }) => {
               <p className='text-sm text-red-500'>{errors.password}</p>
             )
           )}
+        </div>
+
+        <div className='flex w-full items-center gap-2'>
+          <input
+            type='checkbox'
+            id='showPassword'
+            className='h-4 w-4 rounded-sm border border-neutral-700/10 bg-neutral-50 px-2 text-sm font-semibold outline-none ring-2 ring-transparent focus:ring-1 focus:ring-neutral-300'
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <label
+            htmlFor='showPassword'
+            className='cursor-pointer text-sm font-medium text-neutral-700'
+          >
+            Mostrar contraseña
+          </label>
         </div>
 
         <div className='flex w-full flex-col items-center justify-center gap-4'>
