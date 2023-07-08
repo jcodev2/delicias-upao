@@ -84,7 +84,7 @@ const Header = () => {
   const [showBox, setShowBox] = useState(false)
 
   return (
-    <header className='fixed bottom-0 z-40 flex h-16 w-full items-center justify-between border border-slate-200 bg-neutral-50 md:top-0 md:z-10 md:border-none md:bg-neutral-50/20 md:px-4 md:backdrop-blur-lg'>
+    <header className='fixed bottom-0 z-40 flex h-16 w-full items-center justify-between border border-slate-200 bg-neutral-50 md:top-0 md:z-10 md:border-none md:bg-neutral-50/30 md:px-4 md:backdrop-blur-md'>
       <Link
         href='/'
         className='hidden items-center justify-start gap-2 md:flex md:w-1/4'
