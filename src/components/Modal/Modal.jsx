@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onChange, children }) => {
             </div>
 
             <Image
-              src='/img/login.jpg'
+              src='/img/login.avif'
               alt='Hero'
               className='hidden md:block md:w-1/2 md:rounded-r-lg md:object-cover md:object-center'
               width={500}

@@ -2,7 +2,7 @@ import {
   useSessionContext,
   useUser as useSupaUser
 } from '@supabase/auth-helpers-react'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 
 export const UserContext = createContext(undefined)
 
@@ -20,7 +20,10 @@ export const MyUserContextProvider = (props) => {
   const [isLoadingData, setIsLoadingData] = useState(false)
   const [userDetails, setUserDetails] = useState(null)
 
-  const getUserDetails = () => supabase.from('users').select('*').single()
+  const getUserDetails = useCallback(
+    () => supabase.from('users').select('*').single(),
+    [supabase]
+  )
 
   useEffect(() => {
     if (user && !isLoadingData && !userDetails) {
@@ -36,7 +39,7 @@ export const MyUserContextProvider = (props) => {
     } else if (!user && !isLoadingUser && !isLoadingData) {
       setUserDetails(null)
     }
-  }, [user, isLoadingUser])
+  }, [user, isLoadingUser, isLoadingData, userDetails, getUserDetails])
 
   const value = {
     accessToken,
