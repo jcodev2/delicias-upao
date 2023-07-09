@@ -1,11 +1,14 @@
 'use client'
 
 import { Balancer } from 'react-wrap-balancer'
+import { BackgroundBlur } from '../BackgroundBlur'
 import RestaurantCard from './RestaurantCard'
 
 const Restaurants = ({ restaurants }) => {
   return (
-    <section className='mx-4 mb-20 mt-8 flex min-h-screen flex-col items-center gap-4 md:mb-8 lg:min-h-[90vh]'>
+    <section className='relative mx-4 mb-20 mt-8 flex min-h-screen flex-col items-center gap-4 md:mb-8 lg:min-h-[90vh]'>
+      <BackgroundBlur />
+
       <Balancer className='text-center'>
         <h2 className='mb-2 text-3xl font-semibold md:text-4xl lg:text-6xl'>
           Restaurantes
