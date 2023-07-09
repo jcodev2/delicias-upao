@@ -4,38 +4,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 import { toast } from 'react-hot-toast'
-
-const validateInput = (email, password, name = '') => {
-  const errors = {}
-  const nameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
-  const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+=[\]{}|\\,.?:-]{8,}$/
-
-  if (!email || !password) {
-    errors.general = 'Please fill in all fields'
-    return errors
-  }
-
-  if (name && !nameRegex.test(name)) {
-    errors.name = 'Please enter a valid name'
-  }
-
-  if (!emailRegex.test(email)) {
-    errors.email = 'Please enter a valid email address'
-  }
-
-  if (password.length < 8 || password.length > 32) {
-    errors.password = 'Password must be between 8 and 32 characters'
-  }
-
-  if (!passwordRegex.test(password)) {
-    errors.password =
-      'Password must contain at least one uppercase letter, one lowercase letter and one number'
-  }
-
-  return errors
-}
+import ValidateInput from './ValidateInput'
 
 const Auth = ({ providers }) => {
   const supabaseClient = useSupabaseClient()
@@ -58,7 +27,7 @@ const Auth = ({ providers }) => {
   const handleSignIn = async () => {
     setIsSubmitting(true)
 
-    const errors = validateInput(name, email, password)
+    const errors = ValidateInput(email, password, name)
 
     setErrors(errors)
 
@@ -84,7 +53,7 @@ const Auth = ({ providers }) => {
       return
     }
 
-    const { error } = await supabaseClient.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: {
@@ -98,6 +67,9 @@ const Auth = ({ providers }) => {
     } else {
       toast.success('Account created successfully!')
       router.refresh()
+      if (data?.user.confirmation_sent_at) {
+        toast.success('Confirmation email sent successfully!')
+      }
       setIsSubmitting(false)
     }
   }
@@ -105,7 +77,7 @@ const Auth = ({ providers }) => {
   const handleSignUp = async () => {
     setIsSubmitting(true)
 
-    const errors = validateInput(email, password)
+    const errors = ValidateInput(email, password)
 
     setErrors(errors)
 
