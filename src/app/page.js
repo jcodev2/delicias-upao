@@ -13,9 +13,9 @@ export default async function Home() {
 
   return (
     <>
-      <BackgroundBlur />
-
       <section className='relative flex min-h-screen flex-col items-center justify-center'>
+        <BackgroundBlur />
+
         <Balancer className=''>
           <h1 className='mx-auto max-w-4xl text-center text-4xl font-medium tracking-tight text-slate-900 md:text-5xl lg:text-7xl'>
             Encuentra{' '}
