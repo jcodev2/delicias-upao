@@ -1,12 +1,12 @@
 'use client'
 
 import AuthModal from '@/components/Modal/AuthModal'
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setIsMounted(true)
   }, [])
 
