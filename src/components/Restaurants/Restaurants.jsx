@@ -7,7 +7,7 @@ import RestaurantCard from './RestaurantCard'
 const Restaurants = ({ restaurants }) => {
   return (
     <section className='relative mx-4 mb-20 mt-8 flex min-h-screen flex-col items-center gap-4 md:mb-8 lg:min-h-[90vh]'>
-      <BackgroundBlur />
+      <BackgroundBlur opacity='70' />
 
       <Balancer className='text-center'>
         <h2 className='mb-2 text-3xl font-semibold md:text-4xl lg:text-6xl'>
