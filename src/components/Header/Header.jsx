@@ -25,11 +25,11 @@ const Header = () => {
       >
         <picture className='flex h-10 w-10 items-center justify-center'>
           <source
-            srcSet='/img/logo.png'
-            type='image/webp'
+            srcSet='/img/logo.svg'
+            type='image/svg+xml'
           />
           <img
-            src='/img/logo.png'
+            src='/img/logo.svg'
             alt='DeliciasUp'
             className='h-10 w-10 object-contain'
           />
