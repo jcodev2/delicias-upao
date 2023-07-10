@@ -1,4 +1,4 @@
-const ValidateInput = (email, password, name = '') => {
+const validateInput = (email, password, name = '') => {
   const errors = {}
   const nameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
   const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
@@ -30,4 +30,4 @@ const ValidateInput = (email, password, name = '') => {
   return errors
 }
 
-export default ValidateInput
+export default validateInput
