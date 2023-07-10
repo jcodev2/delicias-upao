@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
 
             <Header />
 
-            <main className='relative mx-auto max-w-5xl px-4 md:px-0'>
+            <main className='relative mx-auto flex max-w-5xl flex-col justify-center px-4 md:px-0'>
               {children}
             </main>
           </UserProvider>
