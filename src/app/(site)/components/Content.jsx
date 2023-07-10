@@ -2,8 +2,8 @@
 
 import { BackgroundBlur } from '@/components/BackgroundBlur'
 import { Loader } from '@/components/Loader'
-import useIntersectionObserver from '@/hooks/useIntersectionObserver.hook'
 import dynamic from 'next/dynamic'
+import { useCallback, useRef, useState } from 'react'
 
 const DynamicRestaurants = dynamic(
   () => import('@/components/Restaurants/Restaurants'),
@@ -14,11 +14,21 @@ const DynamicRestaurants = dynamic(
 )
 
 const Content = ({ restaurants }) => {
-  const [lastElementRef, showDynamicRestaurants] = useIntersectionObserver({
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
-  })
+  const [showDynamicRestaurants, setShowDynamicRestaurants] = useState(false)
+
+  const observer = useRef()
+
+  const lastElementRef = useCallback((node) => {
+    if (observer.current) observer.current.disconnect()
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setShowDynamicRestaurants(true)
+      }
+    })
+
+    if (node) observer.current.observe(node)
+  }, [])
 
   return (
     <section
