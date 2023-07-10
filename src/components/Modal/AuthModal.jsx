@@ -4,12 +4,10 @@ import { useSessionContext } from '@supabase/auth-helpers-react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { memo, useCallback, useEffect } from 'react'
-import { Loader } from '../Loader'
-import Modal from './Modal'
 import useAuthModal from './useAuthModal.hook'
+import { Auth } from '../Auth'
 
-const DynamicAuth = dynamic(() => import('../Auth/Auth'), {
-  loading: () => <Loader />,
+const DynamicModal = dynamic(() => import('./Modal'), {
   ssr: false
 })
 
@@ -35,12 +33,16 @@ const AuthModal = memo(() => {
   }, [session, router, onClose])
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onChange={onChange}
-    >
-      {isOpen && <DynamicAuth providers={['google']} />}
-    </Modal>
+    <>
+      {isOpen && (
+        <DynamicModal
+          isOpen={isOpen}
+          onChange={onChange}
+        >
+          <Auth />
+        </DynamicModal>
+      )}
+    </>
   )
 })
 
