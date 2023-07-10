@@ -18,7 +18,7 @@ export default function Menu() {
   }, [user, onOpen])
 
   return (
-    <>
+    <div className='min-h-screen'>
       <BackgroundBlur />
 
       <h1 className='mx-auto max-w-4xl text-center text-4xl font-medium tracking-tight text-slate-900 md:mt-24 md:text-5xl lg:text-7xl'>
@@ -28,6 +28,6 @@ export default function Menu() {
           <span className='relative'>de Delicias Upao</span>
         </span>
       </h1>
-    </>
+    </div>
   )
 }
