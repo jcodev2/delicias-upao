@@ -19,20 +19,31 @@ const Content = ({ restaurants }) => {
   const observer = useRef()
 
   const lastElementRef = useCallback((node) => {
+    // Si el observer.current existe, lo desconectamos
     if (observer.current) observer.current.disconnect()
 
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setShowDynamicRestaurants(true)
+    // Creamos un nuevo observer
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        // Si el elemento es visible, mostramos el componente
+        if (entries[0].isIntersecting) {
+          setShowDynamicRestaurants(true)
+        }
+      },
+      {
+        root: null, // Es el viewport
+        rootMargin: '0px', // Margen del viewport
+        threshold: 0.5 // Porcentaje de visibilidad del elemento
       }
-    })
+    )
 
+    // Si el nodo existe, lo observamos
     if (node) observer.current.observe(node)
   }, [])
 
   return (
     <section
-      className='relative mx-4 mb-20 mt-8 flex min-h-screen flex-col items-center gap-4 md:mb-8 lg:min-h-[90vh]'
+      className='relative mx-4 mb-20 mt-8 flex min-h-fit flex-col items-center gap-4 md:mb-8'
       ref={lastElementRef}
     >
       <BackgroundBlur opacity='70' />
