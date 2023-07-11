@@ -1,14 +1,14 @@
 'use client'
 
 import { useSessionContext } from '@supabase/auth-helpers-react'
-import { useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Loader } from '../Loader'
 import MenuCard from './MenuCard'
 
 const Menu = ({ menu }) => {
   const { supabaseClient } = useSessionContext()
 
-  const PAGE_COUNT = 4
+  const PAGE_COUNT = 7
 
   const [loadedMenus, setLoadedMenus] = useState(menu)
   const [offset, setOffset] = useState(1)
@@ -18,39 +18,27 @@ const Menu = ({ menu }) => {
 
   const containerRef = useRef(null)
 
-  const handleScroll = () => {
-    if (containerRef.current && typeof window !== 'undefined' && !isLastPage) {
-      const container = containerRef.current
-      const { bottom } = container.getBoundingClientRect()
-      const { innerHeight } = window
-      setIsInView(bottom <= innerHeight)
-    }
-  }
+  const handleIntersection = useCallback(
+    (entries) => {
+      const [entry] = entries
+      setIsInView(entry.isIntersecting)
+    },
+    [setIsInView]
+  )
 
-  useEffect(() => {
-    if (isLastPage) return
+  const loadMoreMenus = useCallback(
+    async (offset) => {
+      setLoading(true)
 
-    window.addEventListener('scroll', handleScroll)
+      setOffset((prev) => prev + 1)
 
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [isLastPage])
+      const { data } = await fetchMenus(offset, PAGE_COUNT)
 
-  useEffect(() => {
-    if (isInView) {
-      loadMoreMenus(offset)
-    }
-  }, [isInView])
-
-  const loadMoreMenus = async (offset) => {
-    setLoading(true)
-
-    setOffset((prev) => prev + 1)
-
-    const { data } = await fetchMenus(offset, PAGE_COUNT)
-
-    setLoadedMenus((prev) => [...prev, ...data])
-    setLoading(false)
-  }
+      setLoadedMenus((prev) => [...prev, ...data])
+      setLoading(false)
+    },
+    [setLoading, setLoadedMenus, setOffset]
+  )
 
   const fetchMenus = async (offset, PAGE_COUNT) => {
     try {
@@ -61,6 +49,7 @@ const Menu = ({ menu }) => {
         .from('menu')
         .select('id, name, description, image, stock, rating, price, active')
         .range(from, to)
+        .order('id', { ascending: true })
 
       if (data.length < PAGE_COUNT) {
         setIsLastPage(true)
@@ -74,17 +63,41 @@ const Menu = ({ menu }) => {
     }
   }
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleIntersection)
+    const currentContainerRef = containerRef.current
+
+    if (currentContainerRef) {
+      observer.observe(currentContainerRef)
+    }
+
+    return () => {
+      if (currentContainerRef) {
+        observer.unobserve(currentContainerRef)
+      }
+    }
+  }, [handleIntersection])
+
+  useEffect(() => {
+    if (isInView && !loading && !isLastPage) {
+      loadMoreMenus(offset)
+    }
+  }, [isInView, loading, isLastPage, offset, loadMoreMenus])
+
   return (
-    <section
-      className='mx-auto mb-24 mt-4 flex max-w-[1050px] flex-wrap items-center justify-center gap-4 px-4 md:mb-8'
-      ref={containerRef}
-    >
+    <section className='mx-auto mb-24 mt-4 flex max-w-[1050px] flex-wrap items-center justify-center gap-4 px-4 md:mb-8'>
       {loadedMenus.map((menu) => (
         <MenuCard
           key={menu.id}
           {...menu}
         />
       ))}
+
+      <div
+        className='h-1 w-full'
+        ref={containerRef}
+      />
+
       {loading && (
         <div className='flex w-full items-center justify-center'>
           <Loader />
@@ -94,4 +107,4 @@ const Menu = ({ menu }) => {
   )
 }
 
-export default Menu
+export default memo(Menu)

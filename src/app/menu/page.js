@@ -2,6 +2,8 @@ import getMenu from '@/actions/getMenu'
 import { BackgroundBlur } from '@/components/BackgroundBlur'
 import { MenuComponent } from '@/components/Menu'
 
+export const revalidate = 0
+
 export default async function Menu() {
   const menu = await getMenu()
 

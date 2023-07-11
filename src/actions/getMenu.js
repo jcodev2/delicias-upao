@@ -9,8 +9,8 @@ const getMenu = async (from, to) => {
   const { data, error } = await supabase
     .from('menu')
     .select('*')
-    .order('id', { ascending: false })
-    .limit(4)
+    .order('id', { ascending: true })
+    .limit(7)
 
   if (error) {
     console.error(error)
