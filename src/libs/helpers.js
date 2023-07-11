@@ -1,13 +1,34 @@
 const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1)
+  if (string.length === 0) {
+    return ''
+  }
+
+  const firstChar = string.charAt(0)
+  const restOfString = string.slice(1)
+
+  if (!/^[a-zA-Z]/.test(firstChar)) {
+    return firstChar + capitalizeFirstLetter(restOfString)
+  }
+
+  return firstChar.toUpperCase() + restOfString
 }
 
 const addZeroToRating = (rating) => {
-  return rating.toString().split('.').length === 1 ? `${rating}.0` : rating
+  const ratingString = rating.toString()
+  if (ratingString.indexOf('.') === -1) {
+    return ratingString + '.0'
+  }
+  return ratingString
 }
 
 const addZeroToNumber = (number) => {
-  return number.toString().length === 1 ? `0${number}` : number
+  if (number < 0) {
+    throw new Error('Input must be a non-negative number')
+  }
+  if (Math.abs(number) < 10) {
+    return '0' + Math.abs(number)
+  }
+  return number.toString()
 }
 
-export { addZeroToRating, capitalizeFirstLetter, addZeroToNumber }
+export { addZeroToNumber, addZeroToRating, capitalizeFirstLetter }
