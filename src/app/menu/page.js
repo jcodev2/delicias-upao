@@ -1,33 +1,23 @@
-'use client'
-
+import getMenu from '@/actions/getMenu'
 import { BackgroundBlur } from '@/components/BackgroundBlur'
-import LineSVG from '@/components/BackgroundBlur/LineSvg'
-import useAuthModal from '@/components/Modal/useAuthModal.hook'
-import useUser from '@/hooks/useUser.hook'
-import { useEffect } from 'react'
+import { MenuComponent } from '@/components/Menu'
 
-export default function Menu() {
-  const { user } = useUser()
-  const { onOpen } = useAuthModal()
+export const revalidate = 0
 
-  useEffect(() => {
-    // check if the user is logged in and if not, open the modal
-    if (!user) {
-      onOpen()
-    }
-  }, [user, onOpen])
+export default async function Menu() {
+  const menu = await getMenu()
+
+  console.log(menu)
 
   return (
-    <div className='min-h-screen'>
+    <>
       <BackgroundBlur />
 
-      <h1 className='mx-auto max-w-4xl text-center text-4xl font-medium tracking-tight text-slate-900 md:mt-24 md:text-5xl lg:text-7xl'>
-        Menu{' '}
-        <span className='relative inline-block whitespace-nowrap text-red-500'>
-          <LineSVG />
-          <span className='relative'>de Delicias Upao</span>
-        </span>
+      <h1 className='mx-auto max-w-4xl text-center text-4xl font-bold tracking-tight text-slate-900 md:mt-24 md:text-5xl lg:text-6xl'>
+        Menu
       </h1>
-    </div>
+
+      <MenuComponent menu={menu} />
+    </>
   )
 }
