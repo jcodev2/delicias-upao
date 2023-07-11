@@ -1,7 +1,7 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
-const getMenu = async () => {
+const getMenu = async (from, to) => {
   const supabase = createServerComponentClient({
     cookies
   })
@@ -9,7 +9,8 @@ const getMenu = async () => {
   const { data, error } = await supabase
     .from('menu')
     .select('*')
-    .order('id', { ascending: true })
+    .order('id', { ascending: false })
+    .limit(4)
 
   if (error) {
     console.error(error)
